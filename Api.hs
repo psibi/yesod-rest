@@ -14,8 +14,14 @@ import Import.NoFoundation
 
 
 -- And we'll spell out the handler type signature.
-getApiHomeR :: Yesod master => HandlerT ApiSub (HandlerT master IO) Html
-getApiHomeR = lift $ defaultLayout [whamlet|Welcome to the subsite!|]
+getApiHomeR :: Yesod master => HandlerT ApiSub (HandlerT master IO) TypedContent
+getApiHomeR = selectRep $ do
+                provideRep $ return $ object
+                          [ "name" .= name
+                          , "age" .= age]
+    where
+      name = "Sibi" :: Text
+      age = 28 :: Int
 
 instance Yesod master => YesodSubDispatch ApiSub (HandlerT master IO) where
     yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
