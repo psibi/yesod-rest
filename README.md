@@ -9,7 +9,8 @@ backend as a
 primary purpose of this repository is to use Yesod as a API server
 backend and do the frontend development using a tool like React or
 Angular. So, I will most likely remove `yesod-form` and other related
-code which is not required.
+code which is not required. Also, If I'm happy with this, I will try
+to integrate this as a stack template.
 
 # Demo:
 
