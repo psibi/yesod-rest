@@ -14,9 +14,10 @@ code which is not required.
 # Demo:
 
 `curl --header "Accept: text/html" http://localhost:3000/api/v1
-no match found for accept headers
+no match found for accept headers`
 
-curl --header "Accept: application/json" http://localhost:3000/api/v1
+
+`curl --header "Accept: application/json" http://localhost:3000/api/v1
 {"age":26,"name":"Sibi"}`
 
 
