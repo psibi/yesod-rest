@@ -16,3 +16,4 @@ cabal.sandbox.config
 .DS_Store
 *.swp
 *.keter
+node_modules
