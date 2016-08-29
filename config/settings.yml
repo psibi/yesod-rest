@@ -29,7 +29,7 @@ database:
   host:     "_env:PGHOST:localhost"
   port:     "_env:PGPORT:5432"
   # See config/test-settings.yml for an override during tests
-  database: "_env:PGDATABASE:perm3"
+  database: "_env:PGDATABASE:test"
   poolsize: "_env:PGPOOLSIZE:10"
 
 copyright: Insert copyright statement here
