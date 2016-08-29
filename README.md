@@ -18,6 +18,8 @@ to integrate this as a stack template.
 2. Boilerplate for writing frontend code using React Javascript
    ecosystem is provided. (can be easily adapted to other tools like
    Angular, etc.)
+3. Brings all the advantage of Yesod - type safe urls, simple DSL for
+   routes etc.
 
 # Setup (on an Ubuntu system) and Execution steps
 
@@ -35,14 +37,14 @@ to integrate this as a stack template.
 no match found for accept headers`
 
 
-`curl --header "Accept: application/json" http://localhost:3000/api/v1
+`curl --header "Accept: application/json" http://localhost:3000/api/v1/user
 
 {"age":26,"name":"Sibi"}`
 
 
 # FAQ
 
-1. I see this error on `stack exec yesod-rest`:
+* I see this error on `stack exec yesod-rest`:
 
 ``` text
 yesod-rest: libpq: failed (could not connect to server: Connection refused
@@ -55,7 +57,7 @@ You most likely haven't installed the postgres server. For Ubuntu systems, it ca
 
 `sudo apt-get install postgresql postgresql-contrib`
 
-2. I see this error on `stack exec yesod-rest`:
+* I see this error on `stack exec yesod-rest`:
 
 ``` text
 yesod-rest: libpq: failed (FATAL:  password authentication failed for user "postgres"
@@ -65,7 +67,7 @@ FATAL:  password authentication failed for user "postgres"
 
 [See this.](http://stackoverflow.com/a/7696398/1651941)
 
-3. I see this error on `stack exec yesod-rest`:
+* I see this error on `stack exec yesod-rest`:
 
 ``` text
 yesod-rest: libpq: failed (FATAL:  database "test" does not exist)
