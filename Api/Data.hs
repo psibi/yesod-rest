@@ -6,7 +6,4 @@ import           Yesod
 data ApiSub = ApiSub
 
 -- We have a familiar analogue from mkYesod, with just one extra parameter.
--- We'll discuss that later.
-mkYesodSubData "ApiSub" [parseRoutes|
-/ ApiHomeR GET
-|]
+mkYesodSubData "ApiSub" $(parseRoutesFile "config/apiRoutes")
