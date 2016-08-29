@@ -1,16 +1,12 @@
 yesod-rest
 -----------
 
-Status: Work in progress
-
 A Yesod scaffolding site with Postgres backend. It provides a JSON API
 backend as a
 [separate subsite](http://www.yesodweb.com/book/creating-a-subsite). The
 primary purpose of this repository is to use Yesod as a API server
 backend and do the frontend development using a tool like React or
-Angular. So, I will most likely remove `yesod-form` and other related
-code which is not required. Also, If I'm happy with this, I will try
-to integrate this as a stack template.
+Angular.
 
 # Features
 
@@ -30,16 +26,23 @@ to integrate this as a stack template.
 5. npm run webpack
 6. stack build
 
+# Adding a API Route
+
+Add the route to `config/apiRoutes` file and define your corresponding
+handler function in `API.hs`.
+
 # Demo:
 
-`curl --header "Accept: text/html" http://localhost:3000/api/v1
+``` text
+curl --header "Accept: application/json" http://localhost:3000/api/v1/user
+```
 
-no match found for accept headers`
-
-
-`curl --header "Accept: application/json" http://localhost:3000/api/v1/user
-
-{"age":26,"name":"Sibi"}`
+``` json
+{
+  "name": "Sibi",
+  "age": 26
+}
+```
 
 
 # FAQ
@@ -49,8 +52,7 @@ no match found for accept headers`
 ``` text
 yesod-rest: libpq: failed (could not connect to server: Connection refused
         Is the server running on host "localhost" (127.0.0.1) and accepting
-        TCP/IP connections on port 5432?
-)
+        TCP/IP connections on port 5432?)
 ```
 
 You most likely haven't installed the postgres server. For Ubuntu systems, it can be done by:
@@ -61,8 +63,7 @@ You most likely haven't installed the postgres server. For Ubuntu systems, it ca
 
 ``` text
 yesod-rest: libpq: failed (FATAL:  password authentication failed for user "postgres"
-FATAL:  password authentication failed for user "postgres"
-)
+FATAL:  password authentication failed for user "postgres")
 ```
 
 [See this.](http://stackoverflow.com/a/7696398/1651941)
@@ -74,8 +75,3 @@ yesod-rest: libpq: failed (FATAL:  database "test" does not exist)
 ```
 
 Create a database named `test` on your postgres server.
-
-
-
-
-
