@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE QuasiQuotes           #-}
 {-# LANGUAGE TemplateHaskell       #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Api 
     ( module Api.Data
