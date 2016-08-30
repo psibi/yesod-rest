@@ -25,6 +25,7 @@ Angular.
 4. cd static && npm install
 5. npm run webpack
 6. stack build
+7. stack exec yesod-rest
 
 # Adding a API Route
 
