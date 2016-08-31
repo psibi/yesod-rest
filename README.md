@@ -6,7 +6,10 @@ backend as a
 [separate subsite](http://www.yesodweb.com/book/creating-a-subsite). The
 primary purpose of this repository is to use Yesod as a API server
 backend and do the frontend development using a tool like React or
-Angular.
+Angular.  The current code includes a basic hello world using
+[React](https://facebook.github.io/react/) and
+[Babel](https://babeljs.io/) which is bundled finally by
+[webpack](https://webpack.github.io/). 
 
 # Features
 
