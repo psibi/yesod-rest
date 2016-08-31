@@ -9,7 +9,8 @@ backend and do the frontend development using a tool like React or
 Angular.  The current code includes a basic hello world using
 [React](https://facebook.github.io/react/) and
 [Babel](https://babeljs.io/) which is bundled finally by
-[webpack](https://webpack.github.io/). 
+[webpack](https://webpack.github.io/) and added in the handler
+`getHomeR` via type safe url.
 
 # Features
 
@@ -20,10 +21,10 @@ Angular.  The current code includes a basic hello world using
 3. Brings all the advantage of Yesod - type safe urls, simple DSL for
    routes etc.
 
-# Setup (on an Ubuntu system) and Execution steps
+# Setup and Execution steps
 
 1. Install [Stack](https://docs.haskellstack.org/en/stable/install_and_upgrade/).
-2. sudo apt-get install libpq-dev postgresql postgresql-contrib
+2. sudo apt-get install libpq-dev postgresql postgresql-contrib  (For Debian based systems)
 3. cd yesod-rest
 4. cd static && npm install
 5. npm run webpack
