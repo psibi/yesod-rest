@@ -10,7 +10,7 @@ Angular.  The current code includes a basic hello world using
 [React](https://facebook.github.io/react/) and
 [Babel](https://babeljs.io/) which is bundled finally by
 [webpack](https://webpack.github.io/) and added in the handler
-`getHomeR` via type safe url.
+`getHomeR` in a type safe manner.
 
 # Features
 
