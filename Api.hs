@@ -15,7 +15,7 @@ import Import.NoFoundation
 
 
 -- And we'll spell out the handler type signature.
-getApiHomeR :: Yesod master => HandlerT ApiSub (HandlerT master IO) TypedContent
+getApiHomeR :: ApiHandler TypedContent
 getApiHomeR = selectRep $ do
                 provideRep $ return $ object
                           [ "name" .= name
@@ -24,5 +24,5 @@ getApiHomeR = selectRep $ do
       name = "Sibi" :: Text
       age = 28 :: Int
 
-instance Yesod master => YesodSubDispatch ApiSub (HandlerT master IO) where
+instance (Yesod master, YesodPersistBackend master ~ SqlBackend, YesodPersist master) => YesodSubDispatch ApiSub (HandlerT master IO) where
     yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
