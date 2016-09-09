@@ -29,7 +29,7 @@ Angular.  The current code includes a basic hello world using
 4. cd static && npm install
 5. npm run webpack
 6. stack build
-7. stack exec yesod-rest
+7. stack exec -- yesod devel (Runs development server)
 
 # Adding a API Route
 
@@ -37,6 +37,8 @@ Add the route to `config/apiRoutes` file and define your corresponding
 handler function in `API.hs`.
 
 # Demo:
+
+## GET Request
 
 ``` text
 curl --header "Accept: application/json" http://localhost:3000/api/v1/user
@@ -46,6 +48,29 @@ curl --header "Accept: application/json" http://localhost:3000/api/v1/user
 {
   "name": "Sibi",
   "age": 26
+}
+```
+
+## POST Request
+
+``` text
+curl -i --header "Accept: application/json" -X POST -d '{"ident":"Sibi Prabakaran","password":"strongPassword"}' http://localhost:3000/api/v1/user
+```
+
+``` http
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Date: Fri, 09 Sep 2016 17:57:40 GMT
+Server: Warp/3.2.8
+Content-Type: application/json; charset=utf-8
+Set-Cookie: _SESSION=Ch3WRY8GM9nVwwsjYU7SmfHloAneNgflzNuOUyyaXw5aEj5M+Ok/6qrtq5cLT5HR0htufC2ZdE7K0LvWFPoAEt7+lNdgYYnz+WwTnkXIGxCyEQj2LXhvaxdqf5OUGGuRPrvqlWbKBwE=; Path=/; Expires=Fri, 09-Sep-2016 19:57:40 GMT; HttpOnly
+Vary: Accept, Accept-Language
+```
+
+``` json
+{
+  "ident": "Sibi Prabakaran",
+  "password": "strongPassword"
 }
 ```
 
