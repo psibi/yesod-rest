@@ -99,6 +99,55 @@ Prabakaran) already exists.\", sqlErrorHint =
 \"\"}","message":"Internal Server Error"}
 ```
 
+## PATCH Request
+
+``` shell
+curl -i --header "Accept: application/json" -X PATCH http://localhost:3000/api/v1/user/sibi
+```
+
+``` http
+HTTP/1.1 200 OK
+Transfer-Encoding: chunked
+Date: Fri, 09 Sep 2016 22:53:06 GMT
+Server: Warp/3.2.8
+Content-Type: application/json; charset=utf-8
+Set-Cookie: _SESSION=Yvx90pnkmvDybys5+2dS4O6wwupCM+k46bWHHxxD29MO7KU9kPPzxP44ZT0pVN4YBwT8LjsLja8eVsg055HXWnnN6ot4/BFwkJcarIQ20COroeoJ+mxzNQ1AL+324n1a/gnCZWCCupI=; Path=/; Expires=Sat, 10-Sep-2016 00:53:06 GMT; HttpOnly
+Vary: Accept, Accept-Language
+```
+
+``` json
+{
+  "id": 1,
+  "ident": "sibi",
+  "password": null
+}
+```
+
+Also demonstrating the custom error handling in PATCH method:
+
+``` shell
+curl -i --header "Accept: application/json" --request PATCH http://localhost:3000/api/v1/user/sibi_invalid_request
+```
+
+``` http
+HTTP/1.1 400 Bad Request
+Transfer-Encoding: chunked
+Date: Fri, 09 Sep 2016 22:57:28 GMT
+Server: Warp/3.2.8
+Content-Type: application/json; charset=utf-8
+Set-Cookie: _SESSION=6JraQjDLpGRyZ0/f14zVMvcHQBGY+pIuBVriVal0uMRsadj6ZJA5xirafSAham1q9w2Us0h7AsUfE/Me/aIkZkx3C4jnHXxMR9Wc+zTXCQWPAiSTH3PtZF3dvDkedfSB+aSc+nvJGCU=; Path=/; Expires=Sat, 10-Sep-2016 00:57:28 GMT; HttpOnly
+Vary: Accept, Accept-Language
+```
+
+``` json
+{
+  "errors": [
+    "User id is invalid"
+  ],
+  "message": "Invalid Arguments"
+}
+```
+
 
 # FAQ
 
