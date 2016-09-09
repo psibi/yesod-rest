@@ -1,4 +1,4 @@
-User
+User json
     ident Text
     password Text Maybe
     UniqueUser ident
