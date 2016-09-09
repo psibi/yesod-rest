@@ -74,6 +74,31 @@ Vary: Accept, Accept-Language
 }
 ```
 
+Passing the same request again will give an `500` status code because
+it will violate the uniqueness constraint of the DB Schema.
+
+```
+curl -i --header "Accept: application/json" -X POST -d '{"ident":"Sibi Prabakaran","password":"strongPassword"}' http://localhost:3000/api/v1/user
+```
+
+``` http
+HTTP/1.1 500 Internal Server Error
+Transfer-Encoding: chunked
+Date: Fri, 09 Sep 2016 18:14:45 GMT
+Server: Warp/3.2.8
+Content-Type: application/json; charset=utf-8
+Set-Cookie: _SESSION=Eumei1PVc9GOFWVRKw+jzQuk+ijlarUMueuYm5mvN2gnOhAG9VQHvceOdLXVWjFAjDZcJ4rj0cZrPFbcqQIb0R55bhGDtuSJhQlOQoIKPeclfMh6I4kol0Pkv8xcInJQ0s0zH9XTCR8=; Path=/; Expires=Fri, 09-Sep-2016 20:14:45 GMT; HttpOnly
+Vary: Accept, Accept-Language
+```
+
+``` text
+{"error":"SqlError {sqlState = \"23505\", sqlExecStatus = FatalError,
+sqlErrorMsg = \"duplicate key value violates unique constraint
+\\\"unique_user\\\"\", sqlErrorDetail = \"Key (ident)=(Sibi
+Prabakaran) already exists.\", sqlErrorHint =
+\"\"}","message":"Internal Server Error"}
+```
+
 
 # FAQ
 
