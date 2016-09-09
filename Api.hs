@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE QuasiQuotes           #-}
 {-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE RankNTypes #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module Api 
@@ -34,4 +35,15 @@ postUserR = do
               provideRep $ return $ object
                 [ "ident" .= userIdent user
                 , "password" .= userPassword user]
+
+patchUserPasswordR :: Text -> ApiHandler TypedContent
+patchUserPasswordR ident = do
+  user <- lift $ runDB $ do
+            updateWhere [UserIdent ==. ident] [UserPassword =. Nothing]
+            user <- selectFirst [UserIdent ==. ident] []
+            return user
+  let x = invalidArgs ["User id is invalid"]
+  maybe x (return . toTypedContent . toJSON) user
+
+  
 
