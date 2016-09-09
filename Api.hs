@@ -14,9 +14,11 @@ import           Yesod
 import Import.NoFoundation
 
 
--- And we'll spell out the handler type signature.
-getApiHomeR :: ApiHandler TypedContent
-getApiHomeR = selectRep $ do
+instance (Yesod master, YesodPersistBackend master ~ SqlBackend, YesodPersist master) => YesodSubDispatch ApiSub (HandlerT master IO) where
+    yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
+
+getUserR :: ApiHandler TypedContent
+getUserR = selectRep $ do
                 provideRep $ return $ object
                           [ "name" .= name
                           , "age" .= age]
@@ -24,5 +26,12 @@ getApiHomeR = selectRep $ do
       name = "Sibi" :: Text
       age = 28 :: Int
 
-instance (Yesod master, YesodPersistBackend master ~ SqlBackend, YesodPersist master) => YesodSubDispatch ApiSub (HandlerT master IO) where
-    yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
+postUserR :: ApiHandler TypedContent
+postUserR = do
+  user <- (lift requireJsonBody)
+  _ <- lift $ runDB $ insert (user :: User)
+  selectRep $ do
+              provideRep $ return $ object
+                [ "ident" .= userIdent user
+                , "password" .= userPassword user]
+
