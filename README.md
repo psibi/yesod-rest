@@ -30,6 +30,7 @@ Angular.  The current code includes a basic hello world using
 5. npm run webpack
 6. stack build
 7. stack exec -- yesod devel (Runs development server)
+8. (Or) stack exec yesod-rest
 
 # Adding a API Route
 
