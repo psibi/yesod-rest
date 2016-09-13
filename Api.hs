@@ -15,7 +15,7 @@ import           Yesod
 import Import.NoFoundation
 
 
-instance (Yesod master, YesodPersistBackend master ~ SqlBackend, YesodPersist master) => YesodSubDispatch ApiSub (HandlerT master IO) where
+instance (Yesod master, YesodPersistBackend master ~ SqlBackend, YesodPersist master, YesodAuth master) => YesodSubDispatch ApiSub (HandlerT master IO) where
     yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
 
 getUserR :: ApiHandler TypedContent
