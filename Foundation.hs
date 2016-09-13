@@ -90,6 +90,7 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized HomeR _ = return Authorized
+    isAuthorized (ApisiteR _) _ = return $ Unauthorized "you must be admin"
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
 
