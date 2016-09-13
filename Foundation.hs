@@ -10,7 +10,7 @@ import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
 import qualified Data.CaseInsensitive as CI
 import qualified Data.Text.Encoding as TE
-import Api (ApiSub)
+import Api
 
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
@@ -90,6 +90,7 @@ instance Yesod App where
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
     isAuthorized HomeR _ = return Authorized
+    isAuthorized (ApisiteR UserR) _ = return Authorized
     isAuthorized (ApisiteR _) _ = return $ Unauthorized "you must be admin"
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
