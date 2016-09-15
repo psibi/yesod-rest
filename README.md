@@ -26,11 +26,12 @@ Angular.  The current code includes a basic hello world using
 1. Install [Stack](https://docs.haskellstack.org/en/stable/install_and_upgrade/).
 2. sudo apt-get install libpq-dev postgresql postgresql-contrib  (For Debian based systems)
 3. cd yesod-rest
-4. cd static && npm install
-5. npm run webpack
-6. stack build
-7. stack exec -- yesod devel (Runs development server)
-8. (Or) stack exec yesod-rest
+4. stack build yesod-bin cabal-install --install-ghc
+5. cd static && npm install
+6. npm run webpack
+7. stack build
+8. stack exec -- yesod devel (Runs development server)
+9. (Or) stack exec yesod-rest
 
 # Adding a API Route
 
