@@ -1,18 +1,11 @@
-import React, { Component } from 'react';
-import { render} from 'react-dom';
+import React from 'react';
+import { render } from 'react-dom';
 
-class HelloWorld extends Component {
- 
-    render = () => {
-        return (
-            <div>
-                Hello world
-            </div>
-        );
-    }
-    
-}
+const HelloWorld = () => (<div>Hello world</div>);
 
+const jim = {
+  a: 3,
+};xbkfjaxbfdk
 
 const app = document.getElementById('app');
-render(<HelloWorld/>, app);
+render(<HelloWorld />, app);
