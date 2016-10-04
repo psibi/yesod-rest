@@ -181,3 +181,12 @@ yesod-rest: libpq: failed (FATAL:  database "test" does not exist)
 ```
 
 Create a database named `test` on your postgres server.
+
+* The `webpack` program is automatically getting closed.
+
+Try running this command:
+
+``` shell
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+```
+
