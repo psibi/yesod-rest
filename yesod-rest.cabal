@@ -18,6 +18,7 @@ library
                      Import
                      Import.NoFoundation
                      Model
+                     Resolve
                      Api
                      Api.Data
                      Settings

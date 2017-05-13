@@ -14,6 +14,7 @@ module Api
 import Api.Data
 import Yesod
 import Import.NoFoundation
+import Resolve
 
 instance (Yesod master
          ,YesodPersistBackend master ~ SqlBackend
@@ -33,6 +34,19 @@ postUserR = do
   user <- (lift requireJsonBody)
   _ <- lift $ runDB $ insert (user :: User)
   return $ repJson $ object ["ident" .= userIdent user, "password" .= userPassword user]
+
+type ApiHandle a = forall master. (master ~ App
+                                   ,AuthId master ~ Key User
+                                   ,YesodAuth master
+                                   ,YesodPersistBackend master ~ SqlBackend
+                                   ,YesodPersist master) =>
+                                   HandlerT ApiSub (HandlerT master IO) a
+
+getSettingsR :: ApiHandle RepJson
+getSettingsR = do
+  app <- lift getYesod
+  let appSet = appSettings app
+  return $ repJson $ object ["port" .= (appPort appSet)] 
 
 patchUserPasswordR :: Text -> ApiHandler TypedContent
 patchUserPasswordR ident = do
