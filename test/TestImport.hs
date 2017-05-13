@@ -13,6 +13,7 @@ import Test.Hspec            as X
 import Text.Shakespeare.Text (st)
 import Yesod.Default.Config2 (ignoreEnv, loadYamlSettings)
 import Yesod.Test            as X
+import Resolve
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
