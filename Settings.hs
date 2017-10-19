@@ -6,7 +6,7 @@
 -- declared in the Foundation.hs file.
 module Settings where
 
-import ClassyPrelude.Yesod
+import ClassyPrelude.Yesod         hiding (throw)
 import Control.Exception           (throw)
 import Data.Aeson                  (Result (..), fromJSON, withObject, (.!=),
                                     (.:?))
