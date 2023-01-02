@@ -1,19 +1,24 @@
+{-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module TestImport
     ( module TestImport
     , module X
     ) where
 
 import Application           (makeFoundation, makeLogWare)
-import ClassyPrelude         as X hiding (delete, deleteBy)
+import ClassyPrelude         as X hiding (delete, deleteBy, Handler)
 import Database.Persist      as X hiding (get)
-import Database.Persist.Sql  (SqlPersistM, SqlBackend, runSqlPersistMPool, rawExecute, rawSql, unSingle, connEscapeName)
+import Database.Persist.Sql  (SqlPersistM, runSqlPersistMPool, rawExecute, rawSql, unSingle)
+import Database.Persist.SqlBackend (getEscapedRawName)
 import Foundation            as X
 import Model                 as X
 import Test.Hspec            as X
 import Text.Shakespeare.Text (st)
-import Yesod.Default.Config2 (ignoreEnv, loadYamlSettings)
+import Yesod.Default.Config2 (useEnv, loadYamlSettings)
+import Yesod.Auth            as X
 import Yesod.Test            as X
-import Resolve
+import Yesod.Core.Unsafe     (fakeHandlerGetLogger)
 
 runDB :: SqlPersistM a -> YesodExample App a
 runDB query = do
@@ -23,13 +28,18 @@ runDB query = do
 runDBWithApp :: App -> SqlPersistM a -> IO a
 runDBWithApp app query = runSqlPersistMPool query (appConnPool app)
 
+runHandler :: Handler a -> YesodExample App a
+runHandler handler = do
+    app <- getTestYesod
+    fakeHandlerGetLogger appLogger app handler
+
 
 withApp :: SpecWith (TestApp App) -> Spec
 withApp = before $ do
     settings <- loadYamlSettings
         ["config/test-settings.yml", "config/settings.yml"]
         []
-        ignoreEnv
+        useEnv
     foundation <- makeFoundation settings
     wipeDB foundation
     logWare <- liftIO $ makeLogWare foundation
@@ -43,16 +53,46 @@ wipeDB app = runDBWithApp app $ do
     tables <- getTables
     sqlBackend <- ask
 
-    let escapedTables = map (connEscapeName sqlBackend . DBName) tables
+    -- TRUNCATEing all tables is the simplest approach to wiping the database.
+    -- Should your application grow to hundreds of tables and tests,
+    -- switching to DELETE could be a substantial speedup.
+    -- See: https://github.com/yesodweb/yesod-scaffold/issues/201
+    let escapedTables = map (\t -> getEscapedRawName t sqlBackend) tables
         query = "TRUNCATE TABLE " ++ intercalate ", " escapedTables
     rawExecute query []
 
-getTables :: MonadIO m => ReaderT SqlBackend m [Text]
+getTables :: DB [Text]
 getTables = do
     tables <- rawSql [st|
         SELECT table_name
         FROM information_schema.tables
-        WHERE table_schema = 'public';
+        WHERE table_schema = 'public'
+        AND table_type = 'BASE TABLE';
     |] []
 
     return $ map unSingle tables
+
+-- | Authenticate as a user. This relies on the `auth-dummy-login: true` flag
+-- being set in test-settings.yaml, which enables dummy authentication in
+-- Foundation.hs
+authenticateAs :: Entity User -> YesodExample App ()
+authenticateAs (Entity _ u) = do
+    request $ do
+        setMethod "POST"
+        addPostParam "ident" $ userIdent u
+        setUrl $ AuthR $ PluginR "dummy" []
+
+-- | Create a user.  The dummy email entry helps to confirm that foreign-key
+-- checking is switched off in wipeDB for those database backends which need it.
+createUser :: Text -> YesodExample App (Entity User)
+createUser ident = runDB $ do
+    user <- insertEntity User
+        { userIdent = ident
+        , userPassword = Nothing
+        }
+    _ <- insert Email
+        { emailEmail = ident
+        , emailUserId = Just $ entityKey user
+        , emailVerkey = Nothing
+        }
+    return user

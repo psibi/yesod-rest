@@ -1,7 +1,6 @@
 module Handler.CommonSpec (spec) where
 
 import TestImport
-import Resolve
 
 spec :: Spec
 spec = withApp $ do
