@@ -33,6 +33,3 @@ data App = App
 -- type Handler = HandlerT App IO
 -- type Widget = WidgetT App IO ()
 mkYesodData "App" $(parseRoutesFile "config/routes")
-
--- instance HasPersistBackend SqlBackend where
---   type BaseBackend SqlBackend = SqlBackend
