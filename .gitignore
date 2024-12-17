@@ -19,3 +19,4 @@ cabal.sandbox.config
 node_modules
 static/builds
 npm-debug.log
+.envrc
