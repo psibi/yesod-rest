@@ -1,23 +1,21 @@
-const path = require('path');
-
-
-
-
-module.exports = (env, argv) => ( {
+module.exports = {
     entry: {
         home: './app/jsx/home.jsx'
     },
     output: {
-        path: path.resolve(__dirname, "builds"),
+        path: 'builds',
         filename: "bundle.js"
     },
     module: {
-        rules: [
+        loaders: [
             {
-                test: /\.(js|jsx)$/,
-                exclude: /node_modules/,
-                loader: "babel-loader"
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: 'babel',
+                query: {
+                    presets: ['es2015', 'react', 'stage-0']
+                }
             }
         ]
     }
-});
+};

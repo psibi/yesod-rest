@@ -1,3 +1,2 @@
 /user UserR GET POST
 /user/#Text UserPasswordR PATCH
-/ SubHomeR GET

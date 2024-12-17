@@ -1,8 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
 module Handler.CommentSpec (spec) where
 
 import TestImport
+import Resolve
 import Data.Aeson
 
 spec :: Spec
@@ -24,11 +23,7 @@ spec = withApp $ do
 
             statusIs 200
 
-            comments <- runDB $ selectList [CommentMessage ==. message] []
-            Entity _id comment <-
-                case comments of
-                    [ent] -> pure ent
-                    _ -> error "needed 1 entity"
+            [Entity _id comment] <- runDB $ selectList [CommentMessage ==. message] []
             assertEq "Should have " comment (Comment message Nothing)
 
     describe "invalid requests" $ do
