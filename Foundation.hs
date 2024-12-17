@@ -93,10 +93,10 @@ instance Yesod App where
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
-    shouldLog app _source level =
-        appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+    -- shouldLogIO app _source level =
+    --     appShouldLogAll (appSettings app)
+    --         || level == LevelWarn
+    --         || level == LevelError
 
     makeLogger = return . appLogger
 
@@ -119,7 +119,7 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
+    authenticate creds = liftHandler $ runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
@@ -131,7 +131,7 @@ instance YesodAuth App where
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins _ = [authOpenId Claimed []]
 
-    authHttpManager = getHttpManager
+    authHttpManager = fmap getHttpManager getYesod
 
 instance YesodAuthPersist App
 
