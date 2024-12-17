@@ -15,6 +15,7 @@ import Api.Data
 import Yesod
 import Import.NoFoundation
 import Resolve
+import Foundation (runDB2)
 
 instance YesodSubDispatch ApiSub App where
   yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
@@ -30,7 +31,7 @@ getUserR =  return $ repJson $ object ["name" .= name, "age" .= age]
 postUserR :: SubHandlerFor ApiSub App RepJson
 postUserR = do
   user <- (requireJsonBody)
-  _ <- liftHandler $ runDB $ insert (user :: User)
+  _ <- liftHandler $ runDB $ insert user
   return $ repJson $ object ["ident" .= userIdent user, "password" .= userPassword user]
 
 type ApiHandle a = forall master. (master ~ App
@@ -54,9 +55,13 @@ patchUserPasswordR :: Text -> SubHandlerFor ApiSub App TypedContent
 patchUserPasswordR ident = do
   user <-
     liftHandler $
-    runDB $
-    do updateWhere [UserIdent ==. ident] [UserPassword =. Nothing]
-       user <- selectFirst [UserIdent ==. ident] []
-       return user
+     helperFunc ident
   let x = invalidArgs ["User id is invalid"]
   maybe x (return . toTypedContent . toJSON) user
+
+helperFunc :: Text -> HandlerFor App (Maybe (Entity User))
+-- helperFunc ident = runDB $ do
+--   updateWhere [UserIdent ==. ident] [UserPassword =. Nothing]
+--   user <- selectFirst [UserIdent ==. ident] []
+--   return user
+helperFunc _ = pure $ Nothing

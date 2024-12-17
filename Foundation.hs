@@ -1,3 +1,4 @@
+{-#LANGUAGE InstanceSigs#-}
 {-# OPTIONS_GHC -fno-warn-orphans  #-}
 
 module Foundation where
@@ -103,9 +104,16 @@ instance Yesod App where
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend
+    -- runDB :: (MonadHandler m, HandlerSite m ~ App, MonadUnliftIO m) => ReaderT SqlBackend m a -> m a
     runDB action = do
         master <- getYesod
         runSqlPool action $ appConnPool master
+
+runDB2 :: (MonadHandler m, HandlerSite m ~ App, MonadUnliftIO m) => ReaderT SqlBackend m a -> m a
+runDB2 action = do
+  master <- getYesod
+  runSqlPool action $ appConnPool master
+
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
