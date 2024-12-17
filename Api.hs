@@ -15,24 +15,23 @@ import Api.Data
 import Yesod
 import Import.NoFoundation
 import Resolve
+import Foundation (runDB2)
 
-instance (Yesod master
-         ,YesodPersistBackend master ~ SqlBackend
-         ,YesodPersist master
-         ,YesodAuth master) =>
-         YesodSubDispatch ApiSub (HandlerT master IO) where
+instance YesodSubDispatch ApiSub App where
   yesodSubDispatch = $(mkYesodSubDispatch resourcesApiSub)
 
-getUserR :: ApiHandler RepJson
+-- getUserR :: ApiHandler RepJson
+getUserR :: SubHandlerFor ApiSub App RepJson
 getUserR =  return $ repJson $ object ["name" .= name, "age" .= age]
   where
     name = "Sibi" :: Text
     age = 28 :: Int
 
-postUserR :: ApiHandler RepJson
+-- postUserR :: ApiHandler RepJson
+postUserR :: SubHandlerFor ApiSub App RepJson
 postUserR = do
-  user <- (lift requireJsonBody)
-  _ <- lift $ runDB $ insert (user :: User)
+  user <- (requireJsonBody)
+  _ <- liftHandler $ runDB $ insert user
   return $ repJson $ object ["ident" .= userIdent user, "password" .= userPassword user]
 
 type ApiHandle a = forall master. (master ~ App
@@ -40,21 +39,29 @@ type ApiHandle a = forall master. (master ~ App
                                    ,YesodAuth master
                                    ,YesodPersistBackend master ~ SqlBackend
                                    ,YesodPersist master) =>
-                                   HandlerT ApiSub (HandlerT master IO) a
+                                   HandlerFor ApiSub a
 
-getSettingsR :: ApiHandle RepJson
-getSettingsR = do
-  app <- lift getYesod
-  let appSet = appSettings app
-  return $ repJson $ object ["port" .= (appPort appSet)] 
+-- getSettingsR :: ApiHandle RepJson
+-- getSettingsR :: SubHandlerFor ApiSub App RepJson
+-- getSettingsR = do
+--   app <- getYesod
+--   let appSet = appSettings app
+--   return $ repJson $ object ["port" .= (appPort appSet)]
 
-patchUserPasswordR :: Text -> ApiHandler TypedContent
+-- patchUserPasswordR :: Text -> ApiHandler TypedContent
+
+
+patchUserPasswordR :: Text -> SubHandlerFor ApiSub App TypedContent
 patchUserPasswordR ident = do
   user <-
-    lift $
-    runDB $
-    do updateWhere [UserIdent ==. ident] [UserPassword =. Nothing]
-       user <- selectFirst [UserIdent ==. ident] []
-       return user
+    liftHandler $
+     helperFunc ident
   let x = invalidArgs ["User id is invalid"]
   maybe x (return . toTypedContent . toJSON) user
+
+helperFunc :: Text -> HandlerFor App (Maybe (Entity User))
+-- helperFunc ident = runDB $ do
+--   updateWhere [UserIdent ==. ident] [UserPassword =. Nothing]
+--   user <- selectFirst [UserIdent ==. ident] []
+--   return user
+helperFunc _ = pure $ Nothing

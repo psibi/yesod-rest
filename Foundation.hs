@@ -1,3 +1,4 @@
+{-#LANGUAGE InstanceSigs#-}
 {-# OPTIONS_GHC -fno-warn-orphans  #-}
 
 module Foundation where
@@ -93,19 +94,26 @@ instance Yesod App where
 
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
-    shouldLog app _source level =
-        appShouldLogAll (appSettings app)
-            || level == LevelWarn
-            || level == LevelError
+    -- shouldLogIO app _source level =
+    --     appShouldLogAll (appSettings app)
+    --         || level == LevelWarn
+    --         || level == LevelError
 
     makeLogger = return . appLogger
 
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend
+    -- runDB :: (MonadHandler m, HandlerSite m ~ App, MonadUnliftIO m) => ReaderT SqlBackend m a -> m a
     runDB action = do
         master <- getYesod
         runSqlPool action $ appConnPool master
+
+runDB2 :: (MonadHandler m, HandlerSite m ~ App, MonadUnliftIO m) => ReaderT SqlBackend m a -> m a
+runDB2 action = do
+  master <- getYesod
+  runSqlPool action $ appConnPool master
+
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
@@ -119,7 +127,7 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
+    authenticate creds = liftHandler $ runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
@@ -131,7 +139,7 @@ instance YesodAuth App where
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins _ = [authOpenId Claimed []]
 
-    authHttpManager = getHttpManager
+    authHttpManager = fmap getHttpManager getYesod
 
 instance YesodAuthPersist App
 
