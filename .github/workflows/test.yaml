@@ -1,0 +1,44 @@
+name: Tests
+
+on:
+    pull_request:
+    push:
+      branches:
+      - master
+
+jobs:
+  build:
+    name: CI
+    runs-on: ${{ matrix.os }}
+    env:
+      STACK_ROOT: ${{ github.workspace }}/.stack
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - os: ubuntu-latest
+
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.stack
+            ${{ github.workspace }}/.stack
+          key: linux-haskell-${{ hashFiles('stack.yaml') }}
+          restore-keys: |
+            linux-haskell-
+
+      - name: Build and run tests
+        shell: bash
+        run: |
+            set -ex
+            if [ "$RUNNER_OS" == "Linux" ] || [ "$RUNNER_OS" == "macOS" ]; then
+                curl -sSL https://get.haskellstack.org/ | sh -s - -f
+            fi
+            stack test --fast --no-terminal
